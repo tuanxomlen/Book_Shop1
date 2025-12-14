@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>🛠 Quản Trị</h2>
+        <div class="menu-item active" onclick="switchTab('dashboard', this)">🏠 Tổng Quan</div>
+        <div class="menu-item" onclick="switchTab('orders', this)">🛒 Quản lý Đơn Hàng</div>
+        <div class="menu-item" onclick="switchTab('products', this)">📚 Quản lý Sách</div>
+        <div class="menu-item" onclick="switchTab('users', this)">👥 Quản lý User</div>
+        
+        <div style="margin-top: auto;">
+            <a href="/" class="menu-item">⬅ Về Trang Chủ</a>
+            <a href="/logout" class="menu-item" style="background: #dc3545; text-align: center; margin-top: 10px;">Đăng Xuất</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div id="dashboard" class="tab-content active">
+            <h1>Xin chào, <%= (typeof user !== 'undefined' && user) ? user.username : 'Admin' %>!</h1>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div>
+                        <h3>SÁCH</h3> 
+                        <div class="number"><%= bookCount %></div>
+                    </div>
+                    <div style="font-size: 30px; opacity: 0.3;">📚</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #28a745;">
+                    <div>
+                        <h3 style="color: #28a745;">THÀNH VIÊN</h3> 
+                        <div class="number"><%= userCount %></div>
+                    </div>
+                    <div style="font-size: 30px; opacity: 0.3;">👥</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #ffc107;">
+                    <div>
+                        <h3 style="color: #ffc107;">ĐƠN HÀNG</h3> 
+                        <div class="number"><%= orderCount %></div>
+                    </div>
+                    <div style="font-size: 30px; opacity: 0.3;">🛒</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="orders" class="tab-content">
+            <h2>🛒 Danh Sách Đơn Hàng</h2>
+            <table>
+                <tr>
+                    <th>Mã Đơn / Ngày</th>
+                    <th>Khách Hàng</th>
+                    <th>Sản Phẩm</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành động</th>
+                </tr>
+                <% orders.forEach(order => { %>
+                <tr>
+                    <td>
+                        <b>#<%= order._id.toString().slice(-6) %></b><br>
+                        <small><%= order.createdAt.toLocaleString('vi-VN') %></small>
+                    </td>
+                    <td>
+                        <b><%= order.username %></b><br>
+                        📞 <%= order.phone %><br>
+                        📍 <%= order.address %>
+                    </td>
+                    <td>
+                        <ul style="padding-left: 20px; margin: 0;">
+                            <% order.items.forEach(item => { %>
+                                <li><%= item.title %> (x1)</li>
+                            <% }) %>
+                        </ul>
+                    </td>
+                    <td style="color: #d9534f; font-weight: bold;">
+                        <%= order.totalPrice.toLocaleString() %> đ
+                    </td>
+                    <td>
+                        <% 
+                            let badgeClass = 'bg-pending';
+                            if(order.status === 'Đang giao') badgeClass = 'bg-shipping';
+                            if(order.status === 'Hoàn thành') badgeClass = 'bg-completed';
+                            if(order.status === 'Hủy') badgeClass = 'bg-cancelled';
+                        %>
+                        <span class="badge <%= badgeClass %>"><%= order.status %></span>
+                    </td>
+                    <td>
+                        <form action="/admin/order/update" method="POST">
+                            <input type="hidden" name="id" value="<%= order._id %>">
+                            <select name="status" onchange="this.form.submit()" style="padding: 5px; border-radius: 4px;">
+                                <option value="Chờ xác nhận" <%= order.status==='Chờ xác nhận'?'selected':'' %>>Chờ xử lý</option>
+                                <option value="Đang giao" <%= order.status==='Đang giao'?'selected':'' %>>Đang giao</option>
+                                <option value="Hoàn thành" <%= order.status==='Hoàn thành'?'selected':'' %>>Hoàn thành</option>
+                                <option value="Hủy" <%= order.status==='Hủy'?'selected':'' %>>Hủy đơn</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </table>
+        </div>
+
+        <div id="products" class="tab-content">
+            <h2>📚 Quản lý Sách</h2>
+            
+            <form action="/admin/add" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
+                <b style="font-size: 1.1em; color: var(--primary-color);">+ Thêm sách mới:</b>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <input type="text" name="title" placeholder="Tên sách" required style="flex: 2;">
+                    <input type="text" name="author" placeholder="Tác giả" required style="flex: 1;">
+                    <input type="number" name="price" placeholder="Giá" required style="flex: 1;">
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <label>Cách 1: Upload ảnh từ máy</label><br>
+                        <input type="file" name="imageFile" accept="image/*" style="margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Cách 2: Hoặc dán Link ảnh (URL)</label><br>
+                        <input type="text" name="imageURL" placeholder="https://..." style="margin-top: 5px;">
+                    </div>
+                </div>
+                <button type="submit" style="margin-top: 20px; background: var(--success-color); color: white;">+ Thêm Sách</button>
+            </form>
+
+            <table>
+                <tr>
+                    <th>Ảnh</th> <th>Tên Sách</th> <th>Giá</th> <th>Xóa</th>
+                </tr>
+                <% books.forEach(book => { %>
+                <tr>
+                    <td><img src="<%= book.image %>" class="thumb-img" alt="img"></td>
+                    <td><b><%= book.title %></b><br><small style="color: #666"><%= book.author %></small></td>
+                    <td><%= book.price.toLocaleString() %> đ</td>
+                    <td>
+                        <form action="/admin/delete" method="POST" onsubmit="return confirm('Xóa sách này?');">
+                            <input type="hidden" name="id" value="<%= book._id %>">
+                            <button class="btn-delete" type="submit">&times;</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </table>
+        </div>
+
+        <div id="users" class="tab-content">
+            <h2>👥 Thành Viên</h2>
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tham gia</th>
+                    <th>Hành động</th>
+                </tr>
+                <% users.forEach(u => { %>
+                <tr>
+                    <td>
+                        <%= u.username %>
+                        <% if((typeof user !== 'undefined' && user) && user.username === u.username) { %>
+                            <span style="color: green; font-size: 0.8em; font-weight: bold;">(Bạn)</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if(u.role === 'admin') { %>
+                            <span class="badge" style="background: var(--danger-color);">Admin</span>
+                        <% } else { %>
+                            <span class="badge" style="background: var(--secondary-color);">User</span>
+                        <% } %>
+                    </td>
+                    <td><%= u.createdAt.toLocaleDateString('vi-VN') %></td>
+                    <td>
+                        <% if((typeof user !== 'undefined' && user) && user.username !== u.username) { %>
+                            <form action="/admin/user/delete" method="POST" onsubmit="return confirm('Xóa user <%= u.username %>? Hành động này không thể hoàn tác!');">
+                                <input type="hidden" name="id" value="<%= u._id %>">
+                                <button class="btn-delete">Xóa</button>
+                            </form>
+                        <% } else { %>
+                             <span style="color: #ccc;">---</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            // Ẩn tất cả tab
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Bỏ active ở menu
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            
+            // Hiện tab được chọn
+            document.getElementById(tabId).classList.add('active');
+            // Active menu được chọn
+            if(element) element.classList.add('active');
+        }
+    </script>
+</body>
+</html>

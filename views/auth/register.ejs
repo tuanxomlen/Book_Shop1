@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>Đăng Ký</title></head>
+<body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+    <h1>📝 Đăng Ký</h1>
+    <form action="/register" method="POST" style="display: inline-block; text-align: left; padding: 20px; border: 1px solid #ccc;">
+        <div style="margin-bottom: 10px;">
+            <label>Tài khoản mới:</label><br>
+            <input type="text" name="username" required style="width: 200px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>Mật khẩu:</label><br>
+            <input type="password" name="password" required style="width: 200px;">
+        </div>
+        <button type="submit" style="width: 100%; background: #28a745; color: white; padding: 8px;">Đăng Ký</button>
+    </form>
+    <p>Đã có tài khoản? <a href="/login">Đăng nhập ngay</a></p>
+</body>
+</html>

@@ -1,0 +1,215 @@
+/* public/css/admin.css */
+
+/* --- 1. BIẾN MÀU SẮC --- */
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #858796;
+    --success-color: #1cc88a;
+    --info-color: #36b9cc;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --dark-bg: #222831;
+    --light-bg: #f8f9fc;
+    --white: #ffffff;
+    --text-color: #5a5c69;
+    --border-radius: 8px;
+    --shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+}
+
+/* --- 2. CẤU HÌNH CHUNG --- */
+* { box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+}
+
+/* --- 3. SIDEBAR --- */
+.sidebar {
+    width: 250px;
+    background: var(--dark-bg);
+    color: rgba(255,255,255,0.8);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.sidebar h2 {
+    text-align: center;
+    padding: 20px 0;
+    margin: 0 0 20px 0;
+    color: var(--white);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.menu-item {
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    display: block;
+    font-weight: 500;
+    border-left: 4px solid transparent;
+}
+
+.menu-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--white);
+    padding-left: 30px;
+}
+
+.menu-item.active {
+    background: linear-gradient(90deg, var(--primary-color) 0%, rgba(78, 115, 223, 0.1) 100%);
+    color: var(--white);
+    border-left-color: var(--white);
+}
+
+/* --- 4. MAIN CONTENT --- */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+h1, h2 { color: #333; margin-bottom: 20px; }
+
+/* --- 5. STATS CARDS --- */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--primary-color);
+    transition: transform 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-card:hover { transform: translateY(-5px); }
+.stat-card h3 { margin: 0; font-size: 0.9rem; color: var(--primary-color); text-transform: uppercase; letter-spacing: 1px; }
+.stat-card .number { font-size: 2rem; font-weight: bold; color: #333; margin-top: 5px; }
+
+/* --- 6. FORM --- */
+form {
+    background: var(--white);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+input[type="text"], input[type="number"], input[type="file"], select {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 8px 0;
+    border: 1px solid #d1d3e2;
+    border-radius: 4px;
+    outline: none;
+    transition: border 0.3s;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.2);
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+button:hover { opacity: 0.9; }
+
+/* --- 7. TABLE --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: 10px;
+}
+
+th {
+    background: #f8f9fc;
+    color: var(--primary-color);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px;
+    border-bottom: 2px solid #e3e6f0;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #e3e6f0;
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+tr:hover td { background-color: #fdfdfe; }
+
+/* --- 8. BADGE --- */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+    display: inline-block;
+}
+.bg-pending { background-color: var(--warning-color); color: #333; }
+.bg-shipping { background-color: var(--info-color); }
+.bg-completed { background-color: var(--success-color); }
+.bg-cancelled { background-color: var(--danger-color); }
+
+/* --- 9. TAB ANIMATION --- */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out;
+}
+.tab-content.active { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 10. UTILS --- */
+.thumb-img {
+    width: 60px; height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-delete {
+    background: #ffebe9;
+    color: var(--danger-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+.btn-delete:hover { background: var(--danger-color); color: white; }

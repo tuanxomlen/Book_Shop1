@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang Sản Phẩm</title>
+    <style> 
+        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        
+        /* CSS cho Menu đẹp hơn */
+        nav {
+            background: #333; 
+            padding: 15px 20px; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        nav a { color: white; text-decoration: none; margin: 0 10px; }
+        nav a:hover { text-decoration: underline; color: #f0a500; }
+        .user-info { font-weight: bold; color: #4CAF50; }
+
+        /* CSS cho Sách */
+        .container { padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .book { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            width: 300px; 
+            background: white; 
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button { cursor: pointer; padding: 5px 10px; }
+        .btn-add { background: #007bff; color: white; border: none; border-radius: 4px; }
+        .btn-review { background: #28a745; color: white; border: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="menu-left">
+            <a href="/">🏠 TRANG CHỦ</a>
+            <a href="/cart">🛒 Giỏ Hàng</a>
+            <a href="/contact">📞 Liên Hệ</a>
+        </div>
+
+        <div class="menu-right">
+            <% if (currentUser) { %>
+                <span>Xin chào, <span class="user-info"><%= currentUser.username %></span></span>
+                
+                <% if (currentUser.role === 'admin') { %>
+                    <a href="/admin" style="color: yellow;">⚙️ Admin</a>
+                <% } %>
+
+                <a href="/profile">👤 Hồ sơ</a>
+                <a href="/logout" style="color: #ff6b6b;">Đăng Xuất</a>
+            <% } else { %>
+                <a href="/login">Đăng Nhập</a>
+                <a href="/register" style="background: white; color: #333; padding: 5px 10px; border-radius: 4px;">Đăng Ký</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <h1 style="text-align: center;">Danh Sách Sách Mới</h1>
+
+    <div class="container">
+        <% books.forEach(book => { %>
+            <div class="book">
+                <h3><%= book.title %></h3>
+                <p>Tác giả: <%= book.author %></p>
+                <p style="color: red; font-weight: bold; font-size: 1.2em;"><%= book.price.toLocaleString('vi-VN') %> đ</p>
+
+                <form action="/cart/add" method="POST">
+                    <input type="hidden" name="id" value="<%= book.id %>">
+                    <button type="submit" class="btn-add">➕ Thêm vào giỏ</button>
+                </form>
+                
+                <hr>
+
+                <% if (currentUser) { %>
+                    <form action="/review" method="POST" style="display: flex; gap: 5px;">
+                        <input type="hidden" name="id" value="<%= book.id %>">
+                        <input type="text" name="content" placeholder="Viết đánh giá..." required style="flex: 1;">
+                        <button type="submit" class="btn-review">Gửi</button>
+                    </form>
+                <% } else { %>
+                    <p style="font-size: 0.9em; color: #777;">
+                        <a href="/login">Đăng nhập</a> để viết đánh giá.
+                    </p>
+                <% } %>
+
+                <ul style="background: #f9f9f9; padding: 10px; margin-top: 10px; font-size: 0.9em; list-style-type: none;">
+                    <% if (book.reviews && book.reviews.length > 0) { %>
+                        <% book.reviews.forEach(review => { %>
+                            <li style="border-bottom: 1px dashed #ccc; padding: 3px 0;">💬 <%= review %></li>
+                        <% }) %>
+                    <% } else { %>
+                        <li style="color: #999;"><i>Chưa có đánh giá nào.</i></li>
+                    <% } %>
+                </ul>
+            </div>
+        <% }) %>
+    </div>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhà Sách Online</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+        
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .nav a { text-decoration: none; color: #333; margin-left: 15px; font-weight: bold; }
+        .badge { background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px; }
+
+        /* Lưới sản phẩm (Grid) */
+        .book-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Tự động chia cột */
+            gap: 20px; 
+        }
+
+        /* Thẻ sản phẩm */
+        .book-card { 
+            background: white; border-radius: 8px; overflow: hidden; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            transition: transform 0.2s; display: flex; flex-direction: column;
+        }
+        .book-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* Ảnh sản phẩm */
+        .book-img { 
+            width: 100%; height: 280px; 
+            object-fit: cover; /* Cắt ảnh vừa khung, không bị méo */
+        }
+
+        .book-info { padding: 15px; flex: 1; display: flex; flex-direction: column; }
+        .book-title { font-size: 16px; margin: 0 0 5px 0; color: #333; height: 40px; overflow: hidden; }
+        .book-author { color: #777; font-size: 14px; margin-bottom: 10px; }
+        .book-price { color: #d9534f; font-weight: bold; font-size: 18px; margin-top: auto; }
+
+        .btn-add { 
+            display: block; width: 100%; background: #007bff; color: white; 
+            text-align: center; padding: 10px 0; text-decoration: none; border: none; cursor: pointer; 
+            font-size: 14px; margin-top: 10px; border-radius: 4px;
+        }
+        .btn-add:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📚 My Book Store</h1>
+        <div class="nav">
+            <a href="/">Trang chủ</a>
+            <a href="/cart">Giỏ hàng</a>
+            <a href="/contact">Liên hệ</a>
+            <% if(locals.user) { %>
+                <span>Chào, <%= user.username %></span>
+                <% if(user.role === 'admin') { %> <a href="/admin" style="color: blue;">Quản trị</a> <% } %>
+                <a href="/logout" style="color: red;">Đăng xuất</a>
+            <% } else { %>
+                <a href="/login">Đăng nhập</a>
+            <% } %>
+        </div>
+    </header>
+
+    <div class="book-container">
+        <% books.forEach(book => { %>
+            <div class="book-card">
+                <img src="<%= book.image %>" class="book-img" alt="<%= book.title %>">
+                
+                <div class="book-info">
+                    <h3 class="book-title"><%= book.title %></h3>
+                    <div class="book-author"><%= book.author %></div>
+                    <div class="book-price"><%= book.price.toLocaleString() %> đ</div>
+                    
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" name="id" value="<%= book._id %>">
+                        <button class="btn-add">Thêm vào giỏ</button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+</body>
+</html>

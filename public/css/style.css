@@ -1,0 +1,147 @@
+/* --- PHẦN TRANG LIÊN HỆ (Thêm vào cuối file style.css) --- */
+/* --- NAVBAR STYLE (Dán đè vào style.css) --- */
+
+.navbar {
+    background-color: #ffffff; /* Nền trắng sạch sẽ */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Bóng mờ nhẹ dưới navbar */
+    padding: 15px 0;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
+
+/* Căn chỉnh logo bên trái, menu bên phải */
+.nav-content {
+    display: flex;
+    justify-content: space-between; /* Đẩy 2 phần sang 2 bên */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+/* 1. LOGO BOOKSTORE */
+.logo {
+    font-size: 1.6rem; /* Chữ to */
+    font-weight: 800;  /* Chữ đậm */
+    color: #4e73df;    /* Màu xanh chủ đạo */
+    text-transform: uppercase; /* Viết hoa toàn bộ */
+    letter-spacing: 1px; /* Khoảng cách chữ thoáng hơn */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none; /* Bỏ gạch chân */
+}
+
+.logo:hover {
+    color: #2e59d9; /* Đổi màu khi di chuột */
+}
+
+/* 2. MENU LINK (Trang chủ, Đăng nhập...) */
+.nav-links {
+    display: flex;
+    gap: 25px; /* Khoảng cách giữa các nút link */
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #555;       /* Màu chữ xám đen */
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 12px; /* Tạo vùng bấm rộng hơn */
+    border-radius: 6px;
+    transition: all 0.3s ease; /* Hiệu ứng mượt */
+}
+
+/* Hiệu ứng khi di chuột vào link */
+.nav-links a:hover {
+    background-color: #f0f2f5; /* Nền xám nhạt */
+    color: #4e73df;            /* Chữ xanh */
+    transform: translateY(-2px); /* Nổi lên nhẹ */
+}
+
+/* Nút Đăng nhập/Đăng ký nổi bật hơn (nếu có class btn-login) */
+.btn-login {
+    background-color: #4e73df;
+    color: white !important;
+}
+.btn-login:hover {
+    background-color: #2e59d9;
+    box-shadow: 0 4px 10px rgba(78, 115, 223, 0.3);
+}
+.contact-wrapper {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap; /* Để tự xuống dòng trên mobile */
+    margin-top: 20px;
+}
+
+/* Cột thông tin bên trái */
+.contact-info {
+    background: var(--primary);
+    color: white;
+    padding: 40px;
+    flex: 1;
+    min-width: 300px;
+}
+
+.contact-info h3 { margin-top: 0; font-size: 1.5rem; }
+.contact-info p { opacity: 0.9; line-height: 1.6; }
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+}
+.info-item i {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    background: rgba(255,255,255,0.2);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Cột Form bên phải */
+.contact-form {
+    padding: 40px;
+    flex: 1.5;
+    min-width: 300px;
+}
+
+.contact-form h3 { color: var(--primary); margin-top: 0; margin-bottom: 20px; }
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+    transition: 0.3s;
+}
+.form-control:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 5px rgba(78, 115, 223, 0.2);
+}
+
+textarea.form-control { resize: vertical; min-height: 120px; }
+
+.btn-send {
+    background: var(--primary);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.btn-send:hover { background: #375a7f; transform: translateY(-2px); }

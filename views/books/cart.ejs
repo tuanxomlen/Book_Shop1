@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Giỏ Hàng</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+        
+        .cart-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
+        
+        /* Cột số thứ tự và hành động căn giữa cho đẹp */
+        th:first-child, td:first-child, th:last-child, td:last-child { text-align: center; }
+
+        .total { text-align: right; font-size: 1.2em; font-weight: bold; margin-top: 20px; color: #d9534f; }
+        
+        /* Form thanh toán */
+        .checkout-form { background: #e3f2fd; padding: 20px; margin-top: 30px; border-radius: 8px; }
+        .checkout-form h3 { margin-top: 0; color: #007bff; }
+        
+        input { 
+            width: 100%; padding: 10px; margin: 5px 0 15px 0; 
+            border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; 
+        }
+        
+        /* Nút chung (Mặc định là nút Mua hàng màu xanh) */
+        .btn-submit { 
+            background: #28a745; color: white; padding: 12px 20px; 
+            border: none; cursor: pointer; width: 100%; border-radius: 5px;
+            font-size: 16px; font-weight: bold; 
+        }
+        .btn-submit:hover { background: #218838; }
+
+        /* Nút Xóa (Màu đỏ, nhỏ hơn) */
+        .btn-delete {
+            background: #dc3545; color: white; border: none; 
+            padding: 5px 10px; border-radius: 4px; cursor: pointer; 
+            font-size: 14px; width: auto; /* Để nút không bị giãn full màn hình */
+        }
+        .btn-delete:hover { background: #c82333; }
+
+        .btn-back { text-decoration: none; color: #666; display: inline-block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="btn-back">⬅ Tiếp tục mua sắm</a>
+
+    <div class="cart-container">
+        <h1 style="text-align: center;">🛒 Giỏ Hàng Của Bạn</h1>
+
+        <% if (cart.length > 0) { %>
+            <table>
+                <tr>
+                    <th style="width: 50px;">STT</th>
+                    <th>Sách</th>
+                    <th>Giá</th>
+                    <th style="width: 100px;">Hành động</th>
+                </tr>
+                
+                <% cart.forEach((item, index) => { %>
+                <tr>
+                    <td><%= index + 1 %></td>
+                    <td>
+                        <b><%= item.title %></b><br>
+                        <small style="color: #666;"><%= item.author %></small>
+                    </td>
+                    <td><%= item.price.toLocaleString() %> đ</td>
+                    <td>
+                        <form action="/cart/remove" method="POST">
+                            <input type="hidden" name="index" value="<%= index %>">
+                            <button type="submit" class="btn-delete">🗑 Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </table>
+
+            <div class="total">
+                Tổng cộng: <%= total.toLocaleString() %> đ
+            </div>
+
+            <div class="checkout-form">
+                <h3>🚚 Thông tin giao hàng</h3>
+                <form action="/checkout" method="POST">
+                    <label>Địa chỉ nhận hàng:</label>
+                    <input type="text" name="address" placeholder="Số nhà, Tên đường, Quận/Huyện..." required>
+
+                    <label>Số điện thoại:</label>
+                    <input type="text" name="phone" placeholder="09xxxxxxx" required>
+
+                    <button type="submit" class="btn-submit">✅ XÁC NHẬN ĐẶT HÀNG</button>
+                </form>
+            </div>
+
+        <% } else { %>
+            <p style="text-align: center; font-size: 1.2em; color: #888;">
+                Giỏ hàng trống trơn! 😭 <br><br>
+                <a href="/">Đi mua sách ngay</a>
+            </p>
+        <% } %>
+    </div>
+
+</body>
+</html>
